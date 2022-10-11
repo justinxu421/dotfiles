@@ -1,5 +1,7 @@
 {
-  "suggest.noselect": false,
+ // "eslint.packageManager": "yarn",
+ // "eslint.nodePath": ".yarn/sdks",
+  "workspace.workspaceFolderCheckCwd": false,
   "coc.preferences.formatOnSaveFiletypes": [
     "javascript",
     "typescript",
@@ -10,5 +12,6 @@
     "graphql",
     "python"
   ],
-  "prettier.prettierPath": ".yarn/sdks/prettier"
+  "prettier.prettierPath": ".yarn/sdks/prettier",
+  "tsserver.tsdk": ".yarn/sdks/typescript/lib"
 }

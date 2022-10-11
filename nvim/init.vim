@@ -36,9 +36,6 @@ Plug 'scrooloose/nerdtree'
 Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'christoomey/vim-tmux-navigator'
 
-"Treesitter
-Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
-Plug 'tpope/vim-fugitive'
 
 "Markdown preview
 Plug 'ellisonleao/glow.nvim'
@@ -92,8 +89,9 @@ Plug 'nvim-telescope/telescope.nvim'
 "Telescope
 Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'make' }
 
-"git diff
-Plug 'sindrets/diffview.nvim'
+"git
+Plug 'tpope/vim-fugitive'
+Plug 'airblade/vim-gitgutter'
 
 "magit
 Plug 'TimUntersberger/neogit'
@@ -269,6 +267,9 @@ let g:mkdp_markdown_css = ''
 " use a custom highlight style must absolute path
 " like '/Users/username/highlight.css' or expand('~/highlight.css')
 let g:mkdp_highlight_css = ''
+highlight GitGutterAdd    guifg=#009900 ctermfg=2
+highlight GitGutterChange guifg=#bbbb00 ctermfg=3
+highlight GitGutterDelete guifg=#ff2222 ctermfg=1
 
 " use a custom port to start server or random for empty
 let g:mkdp_port = ''
@@ -291,4 +292,3 @@ lua require("init")
 
 " nnoremap <C-_> :Telescope current_buffer_fuzzy_find sorting_strategy=ascending prompt_position=top <cr> 
 nnoremap <leader>t lua require('telescope.builtin').current_buffer_fuzzy_find({sorting_strategy="ascending", prompt_position="top"})<cr>
-nnoremap <F4> :lua package.loaded.bashbunni = nil <cr>:source ~/.config/nvim/init.vim <cr> 

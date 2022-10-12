@@ -17,6 +17,8 @@ set noswapfile
 set nu 
 set foldlevelstart=99
 set scrolloff=7
+set ignorecase
+set smartcase
 "use y and p with the system clipboard
 set clipboard=unnamedplus
 
@@ -27,22 +29,15 @@ set clipboard=unnamedplus
 call plug#begin('~/.config/nvim/autoload/')
 
 "Colour scheme
-" My fave colour schemes:
-" dracula/dracula-theme, rakr/vim-one, gosukiwi/vim-atom-dark,
-" phanviet/vim-monokai-pro rhysd/vim-color-spring-night arzg/vim-colors-xcode
 Plug 'phanviet/vim-monokai-pro'
+Plug 'psf/black', { 'branch': 'stable' }
+
+"VSCode like stuff
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'scrooloose/nerdtree'
 Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'christoomey/vim-tmux-navigator'
-
-
-"Markdown preview
-Plug 'ellisonleao/glow.nvim'
-"Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }}
-
-"Language packs
-Plug 'sheerun/vim-polyglot'
+Plug 'vim-test/vim-test'
 
 "Nvim motions
 Plug 'phaazon/hop.nvim'
@@ -63,20 +58,6 @@ Plug 'neovim/nvim-lspconfig'
 
 "Buffer navigation
 Plug 'nvim-lualine/lualine.nvim'
-
-"Go
-"Plug 'fatih/vim-go'
-
-"Haskell
-Plug 'neovimhaskell/haskell-vim'
-Plug 'alx741/vim-hindent'
-
-"debugging
-Plug 'mfussenegger/nvim-dap'
-Plug 'leoluz/nvim-dap-go'
-Plug 'rcarriga/nvim-dap-ui'
-Plug 'theHamsta/nvim-dap-virtual-text'
-Plug 'nvim-telescope/telescope-dap.nvim'
 
 "Grammar checking because I can't english
 Plug 'rhysd/vim-grammarous'
@@ -117,7 +98,18 @@ set encoding=UTF-8
 set termguicolors
 colorscheme monokai_pro
 
+
 let mapleader = ","
+
+let test#strategy = {
+  \ 'nearest': 'neovim',
+\ 'file':    'neovim',
+  \ 'suite':   'neovim',
+\}
+let g:test#neovim#start_normal = 1
+let g:test#javascript#jest#executable = 'yarn jest --group=-interaction'
+let test#python#runner = 'pytest'
+let test#python#pytest#executable = 'DJANGO_SETTTINGS_MODULE=learning.test_settings bin/pytest --lf --runintegration -Wignore'
 
 "Navigate buffers
 nnoremap <leader>bn :bnext<CR>
@@ -132,7 +124,12 @@ nmap <leader>f :NERDTreeFind<CR>
 nnoremap <leader>r :source ~/.config/nvim/init.vim<CR>
 nnoremap <leader>ne :Telescope file_browser<CR>
 nnoremap <leader>ff :Telescope find_files<CR>
-nnoremap <leader>gf :Telescope git_files<CR>
+nnoremap <C-p> :Telescope git_files<CR>
+nnoremap <C-f> :Telescope live_grep<CR>
+nnoremap <leader>gb :Telescope git_branches<CR>
+
+nmap cp :let @+ = expand("%")
+
 "nnoremap <leader>f :call CocAction('format')<CR>
 autocmd StdinReadPre * let s:std
 "==============================================================================
@@ -141,24 +138,49 @@ autocmd StdinReadPre * let s:std
 "Go - format on save
 autocmd BufWritePre *.go lua vim.lsp.buf.formatting()
 command! -nargs=0 Prettier :CocCommand prettier.formatFile
+autocmd BufWritePre *.py execute ':Black'
 
 " coc config
 let g:coc_global_extensions = [
 \ 'coc-snippets',
 \ 'coc-pairs',
 \ 'coc-tsserver',
+\ 'coc-jest',
 \ 'coc-eslint', 
 \ 'coc-prettier', 
 \ 'coc-json', 
-\ 'coc-python', 
+\ 'coc-pyright', 
+\ 'coc-actions',
 \ ]
 " from readme
+"
 
 " Remap keys for gotos
 nmap <silent> gd <Plug>(coc-definition)
 nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
+
+" Use K to show documentation in preview window.
+nnoremap <silent> K :call ShowDocumentation()<CR>
+
+function! ShowDocumentation()
+  if CocAction('hasProvider', 'hover')
+    call CocActionAsync('doHover')
+  else
+    call feedkeys('K', 'in')
+  endif
+endfunction
+
+" Symbol renaming.
+nmap <leader>rn <Plug>(coc-rename)
+
+" Testing
+nmap <silent> <leader>t :TestNearest<CR>
+nmap <silent> <leader>T :TestFile<CR>
+nmap <silent> <leader>a :TestSuite<CR>
+nmap <silent> <leader>l :TestLast<CR>
+nmap <silent> <leader>g :TestVisit<CR>
 
 augroup ReactFiletypes
   autocmd!
@@ -282,13 +304,10 @@ let g:mkdp_page_title = '「${name}」'
 " these filetypes will have MarkdownPreview... commands
 let g:mkdp_filetypes = ['markdown']
 
-"normal/insert
-nnoremap <C-p> :MarkdownPreview
-
 "Telescope
 " will find .lua file that exist at runtime
 " should be unique
 lua require("init") 
 
-" nnoremap <C-_> :Telescope current_buffer_fuzzy_find sorting_strategy=ascending prompt_position=top <cr> 
-nnoremap <leader>t lua require('telescope.builtin').current_buffer_fuzzy_find({sorting_strategy="ascending", prompt_position="top"})<cr>
+nnoremap <C-_> :Telescope current_buffer_fuzzy_find sorting_strategy=ascending prompt_position=top <cr> 
+" nnoremap <leader>t lua require('telescope.builtin').current_buffer_fuzzy_find({sorting_strategy="ascending", prompt_position="top"})<cr>

@@ -1,6 +1,4 @@
 {
- // "eslint.packageManager": "yarn",
- // "eslint.nodePath": ".yarn/sdks",
   "workspace.workspaceFolderCheckCwd": false,
   "coc.preferences.formatOnSaveFiletypes": [
     "javascript",
@@ -13,5 +11,10 @@
     "python"
   ],
   "prettier.prettierPath": ".yarn/sdks/prettier",
-  "tsserver.tsdk": ".yarn/sdks/typescript/lib"
+  "tsserver.tsdk": ".yarn/sdks/typescript/lib",
+  "python.linting.flake8Enabled": true,
+  "python.linting.mypyEnabled": false,
+  "python.pythonPath": "~/.pyenv/versions/app",
+  "python.venvPath": "~/.pyenv/versions",
+  "python.sortImports.path": "/.pyenv/versions/app/bin/isort"
 }

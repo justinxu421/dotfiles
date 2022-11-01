@@ -39,6 +39,10 @@ Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'vim-test/vim-test'
 
+" Treesitter
+Plug 'nvim-treesitter/nvim-treesitter'
+Plug 'nvim-treesitter/nvim-treesitter-context'
+
 "Nvim motions
 Plug 'phaazon/hop.nvim'
 

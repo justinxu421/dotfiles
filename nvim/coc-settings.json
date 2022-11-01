@@ -16,5 +16,6 @@
   "python.linting.mypyEnabled": false,
   "python.pythonPath": "~/.pyenv/versions/app",
   "python.venvPath": "~/.pyenv/versions",
-  "python.sortImports.path": "/.pyenv/versions/app/bin/isort"
+  "python.sortImports.path": "/.pyenv/versions/app/bin/isort",
+  "python.formatting.provider": "black"
 }

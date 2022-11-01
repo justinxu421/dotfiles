@@ -31,6 +31,7 @@ call plug#begin('~/.config/nvim/autoload/')
 "Colour scheme
 Plug 'phanviet/vim-monokai-pro'
 Plug 'psf/black', { 'branch': 'stable' }
+Plug 'luochen1990/rainbow'
 
 "VSCode like stuff
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
@@ -38,10 +39,6 @@ Plug 'scrooloose/nerdtree'
 Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'vim-test/vim-test'
-
-" Treesitter
-Plug 'nvim-treesitter/nvim-treesitter'
-Plug 'nvim-treesitter/nvim-treesitter-context'
 
 "Nvim motions
 Plug 'phaazon/hop.nvim'
@@ -56,6 +53,10 @@ Plug 'saadparwaiz1/cmp_luasnip'
 
 "File browsing
 Plug 'nvim-telescope/telescope-file-browser.nvim'
+
+"Treesitter
+Plug 'nvim-treesitter/nvim-treesitter'
+Plug 'nvim-treesitter/nvim-treesitter-context'
 
 "Native LSP
 Plug 'neovim/nvim-lspconfig'
@@ -75,6 +76,7 @@ Plug 'nvim-telescope/telescope.nvim'
 Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'make' }
 
 "git
+Plug 'tpope/vim-rhubarb'
 Plug 'tpope/vim-fugitive'
 Plug 'airblade/vim-gitgutter'
 
@@ -92,6 +94,7 @@ Plug 'leafgarland/typescript-vim' "TS support
 Plug 'maxmellon/vim-jsx-pretty' "JS and JSX syntax
 Plug 'jparise/vim-graphql' "GraphQL syntax
 Plug 'mattn/emmet-vim'
+Plug 'hashivim/vim-terraform'
 
 call plug#end()
 
@@ -107,11 +110,13 @@ let mapleader = ","
 
 let test#strategy = {
   \ 'nearest': 'neovim',
-\ 'file':    'neovim',
+  \ 'file':    'neovim',
   \ 'suite':   'neovim',
 \}
 let g:test#neovim#start_normal = 1
 let g:test#javascript#jest#executable = 'yarn jest --group=-interaction'
+let g:rainbow_active = 1 "set to 0 if you want to enable it later via :RainbowToggle
+
 let test#python#runner = 'pytest'
 let test#python#pytest#executable = 'DJANGO_SETTTINGS_MODULE=learning.test_settings bin/pytest --lf --runintegration -Wignore'
 
@@ -136,13 +141,21 @@ nmap cp :let @+ = expand("%")
 
 "nnoremap <leader>f :call CocAction('format')<CR>
 autocmd StdinReadPre * let s:std
+
 "==============================================================================
 " plugin configs
 "==============================================================================
-"Go - format on save
+"- format on save
 autocmd BufWritePre *.go lua vim.lsp.buf.formatting()
 command! -nargs=0 Prettier :CocCommand prettier.formatFile
-autocmd BufWritePre *.py execute ':Black'
+autocmd BufWritePre *.py call CocAction('format')
+
+let g:NERDTreeWinSize=60
+
+let gitBranch=system("git rev-parse --abbrev-ref HEAD")
+    set laststatus=2
+    set statusline=%F%m%r%h%w\ [POS=%04l,%04v]\ [%p%%]\ [LEN=%L]
+    execute "set statusline +=" . gitBranch
 
 " coc config
 let g:coc_global_extensions = [
@@ -174,6 +187,42 @@ function! ShowDocumentation()
   else
     call feedkeys('K', 'in')
   endif
+endfunction
+
+map gc :call Toggle()<CR>
+
+function! Comment()
+	let ft = &filetype
+	if ft == 'php' || ft == 'ruby' || ft == 'sh' || ft == 'make' || ft == 'python' || ft == 'perl'
+		silent s/^/\#/
+	elseif ft == 'typescriptreact' || ft == 'typescript' || ft == 'javascript' || ft == 'c' || ft == 'cpp' || ft == 'java' || ft == 'objc' || ft == 'scala' || ft == 'go'
+		silent s:^:\/\/:g
+	elseif ft == 'tex'
+		silent s:^:%:g
+	elseif ft == 'vim'
+		silent s:^:\":g
+	endif
+endfunction
+
+function! Uncomment()
+	let ft = &filetype
+	if ft == 'php' || ft == 'ruby' || ft == 'sh' || ft == 'make' || ft == 'python' || ft == 'perl'
+		silent s/^\#//
+	elseif ft == 'typescriptreact' || ft == 'typescript' || ft == 'javascript' || ft == 'c' || ft == 'cpp' || ft == 'java' || ft == 'objc' || ft == 'scala' || ft == 'go'
+		silent s:^\/\/::g
+	elseif ft == 'tex'
+		silent s:^%::g
+	elseif ft == 'vim'
+		silent s:^\"::g
+	endif
+endfunction
+
+function! Toggle()
+	try
+		call Uncomment()
+	catch
+		call Comment()
+	endtry
 endfunction
 
 " Symbol renaming.

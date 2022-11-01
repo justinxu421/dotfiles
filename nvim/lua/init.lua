@@ -22,6 +22,13 @@ lspconfig.gopls.setup{
   end,
 } -- connect to server
 
+-- Treesitter
+require'nvim-treesitter.configs'.setup {
+  highlight = {
+    enable = true,
+  }
+}
+
 require'treesitter-context'.setup{
     enable = true, -- Enable this plugin (Can be enabled/disabled later via commands)
     max_lines = 0, -- How many lines the window should span. Values <= 0 mean no limit.
@@ -33,6 +40,7 @@ require'treesitter-context'.setup{
         -- By setting the 'default' entry below, you can control which nodes you want to
         -- appear in the context window.
         default = {
+            'def',
             'class',
             'function',
             'method',
@@ -41,9 +49,17 @@ require'treesitter-context'.setup{
             'if',
             'switch',
             'case',
+            'describe',
+            'it',
+            'const',
         },
         -- Patterns for specific filetypes
         -- If a pattern is missing, *open a PR* so everyone can benefit.
+        javascript = {
+            'describe',
+            'it',
+            'const',
+        },
         tex = {
             'chapter',
             'section',

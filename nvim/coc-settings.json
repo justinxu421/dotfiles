@@ -11,7 +11,10 @@
     "python"
   ],
   "prettier.prettierPath": ".yarn/sdks/prettier",
+<<<<<<< HEAD
   "tsserver.tsdk": ".yarn/sdks/typescript/lib",
+=======
+>>>>>>> 2222031 (commit nvim)
   "python.linting.flake8Enabled": true,
   "python.linting.mypyEnabled": false,
   "python.pythonPath": "~/.pyenv/versions/app",

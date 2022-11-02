@@ -1,7 +1,4 @@
 node_modules
 yarn
 yarn.lock
-<<<<<<< HEAD
-=======
 autoload
->>>>>>> 2222031 (commit nvim)

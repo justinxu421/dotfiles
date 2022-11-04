@@ -78,6 +78,7 @@ Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'make' }
 "git
 Plug 'tpope/vim-rhubarb'
 Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-surround'
 Plug 'airblade/vim-gitgutter'
 
 "magit
@@ -98,8 +99,7 @@ Plug 'hashivim/vim-terraform'
 
 call plug#end()
 
-"key combos
-"==============================================================================
+"key combos =============================================================================="
 
 set encoding=UTF-8
 set termguicolors

@@ -6,5 +6,8 @@
 3. To install plugins, go into `nvim` and run `:Plug Install`
 
 ## Tmux
+Stolen from https://www.josean.com/posts/tmux-setup
 1. `brew install tmux`
-2. To install plugins `prefix + I`, by default `prefix = Ctrl + b`
+2. git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+3. tmux source ~/.tmux.conf
+4. To install plugins `prefix + I`, by default `prefix = Ctrl + b`

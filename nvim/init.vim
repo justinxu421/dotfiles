@@ -79,6 +79,7 @@ Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'make' }
 Plug 'tpope/vim-rhubarb'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-surround'
+Plug 'tpope/vim-commentary'
 Plug 'airblade/vim-gitgutter'
 
 "magit
@@ -148,30 +149,30 @@ nmap <leader>f :NERDTreeFind<CR>
 "Other
 nnoremap <leader>r :source ~/.config/nvim/init.vim<CR>
 nnoremap <leader>ne :Telescope file_browser<CR>
-nnoremap <leader>ff :Telescope find_files<CR>
+"nnoremap <leader>ff :Telescope find_files<CR>
 nnoremap <C-p> :Telescope git_files<CR>
 nnoremap <C-f> :Telescope live_grep<CR>
 nnoremap <leader>gb :Telescope git_branches<CR>
 
 nmap cp :let @+ = expand("%")
 
-"nnoremap <leader>f :call CocAction('format')<CR>
+nnoremap <leader>ff :call CocAction('format')<CR>
 autocmd StdinReadPre * let s:std
 
 "==============================================================================
 " plugin configs
 "==============================================================================
 "- format on save
-autocmd BufWritePre *.go lua vim.lsp.buf.formatting()
+"autocmd BufWritePre *.go lua vim.lsp.buf.formatting()
 command! -nargs=0 Prettier :CocCommand prettier.formatFile
 autocmd BufWritePre *.py call CocAction('format')
 
 let g:NERDTreeWinSize=60
 
-let gitBranch=system("git rev-parse --abbrev-ref HEAD")
-    set laststatus=2
-    set statusline=%F%m%r%h%w\ [POS=%04l,%04v]\ [%p%%]\ [LEN=%L]
-    execute "set statusline +=" . gitBranch
+"let gitBranch=system("git rev-parse --abbrev-ref HEAD")
+"set laststatus=2
+"set statusline=%F%m%r%h%w\ [LEN=%L]
+"execute "set statusline +=" . gitBranch
 
 " coc config
 let g:coc_global_extensions = [
@@ -184,9 +185,9 @@ let g:coc_global_extensions = [
 \ 'coc-json', 
 \ 'coc-pyright', 
 \ 'coc-actions',
+\ 'coc-go',
 \ ]
 " from readme
-"
 
 " Remap keys for gotos
 nmap <silent> gd <Plug>(coc-definition)
@@ -203,42 +204,6 @@ function! ShowDocumentation()
   else
     call feedkeys('K', 'in')
   endif
-endfunction
-
-map gc :call Toggle()<CR>
-
-function! Comment()
-	let ft = &filetype
-	if ft == 'php' || ft == 'ruby' || ft == 'sh' || ft == 'make' || ft == 'python' || ft == 'perl'
-		silent s/^/\#/
-	elseif ft == 'typescriptreact' || ft == 'typescript' || ft == 'javascript' || ft == 'c' || ft == 'cpp' || ft == 'java' || ft == 'objc' || ft == 'scala' || ft == 'go'
-		silent s:^:\/\/:g
-	elseif ft == 'tex'
-		silent s:^:%:g
-	elseif ft == 'vim'
-		silent s:^:\":g
-	endif
-endfunction
-
-function! Uncomment()
-	let ft = &filetype
-	if ft == 'php' || ft == 'ruby' || ft == 'sh' || ft == 'make' || ft == 'python' || ft == 'perl'
-		silent s/^\#//
-	elseif ft == 'typescriptreact' || ft == 'typescript' || ft == 'javascript' || ft == 'c' || ft == 'cpp' || ft == 'java' || ft == 'objc' || ft == 'scala' || ft == 'go'
-		silent s:^\/\/::g
-	elseif ft == 'tex'
-		silent s:^%::g
-	elseif ft == 'vim'
-		silent s:^\"::g
-	endif
-endfunction
-
-function! Toggle()
-	try
-		call Uncomment()
-	catch
-		call Comment()
-	endtry
 endfunction
 
 " Symbol renaming.

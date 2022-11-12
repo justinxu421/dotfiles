@@ -163,9 +163,9 @@ autocmd StdinReadPre * let s:std
 " plugin configs
 "==============================================================================
 "- format on save
-"autocmd BufWritePre *.go lua vim.lsp.buf.formatting()
 command! -nargs=0 Prettier :CocCommand prettier.formatFile
 autocmd BufWritePre *.py call CocAction('format')
+autocmd BufWritePre *.go call CocAction('format')
 
 let g:NERDTreeWinSize=60
 

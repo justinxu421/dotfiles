@@ -40,9 +40,6 @@ Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'vim-test/vim-test'
 
-"Nvim motions
-Plug 'phaazon/hop.nvim'
-
 "LSP autocomplete
 Plug 'hrsh7th/nvim-cmp'
 Plug 'hrsh7th/cmp-nvim-lsp'
@@ -82,9 +79,6 @@ Plug 'tpope/vim-surround'
 Plug 'tpope/vim-commentary'
 Plug 'airblade/vim-gitgutter'
 
-"magit
-Plug 'TimUntersberger/neogit'
-
 "todo comments
 Plug 'folke/todo-comments.nvim'
 
@@ -121,6 +115,8 @@ let g:rainbow_active = 1 "set to 0 if you want to enable it later via :RainbowTo
 let test#python#runner = 'pytest'
 let test#python#pytest#executable = 'DJANGO_SETTTINGS_MODULE=learning.test_settings bin/pytest --lf --runintegration -Wignore'
 
+inoremap jk <Esc>
+
 "Navigate buffers
 nnoremap <leader>bn :bnext<CR>
 nnoremap <leader>bp :bprevious<CR>
@@ -152,11 +148,14 @@ nnoremap <leader>ne :Telescope file_browser<CR>
 "nnoremap <leader>ff :Telescope find_files<CR>
 nnoremap <C-p> :Telescope git_files<CR>
 nnoremap <C-f> :Telescope live_grep<CR>
+nnoremap <C-t> :Telescope resume<CR>
 nnoremap <leader>gb :Telescope git_branches<CR>
 
-nmap cp :let @+ = expand("%")
+nmap cp :let @+ = expand("%")<CR>
 
 nnoremap <leader>ff :call CocAction('format')<CR>
+xmap <leader>a  <Plug>(coc-codeaction-selected)
+nmap <leader>a  <Plug>(coc-codeaction-selected)
 autocmd StdinReadPre * let s:std
 
 "==============================================================================
@@ -169,15 +168,16 @@ autocmd BufWritePre *.go call CocAction('format')
 
 let g:NERDTreeWinSize=60
 
-"let gitBranch=system("git rev-parse --abbrev-ref HEAD")
-"set laststatus=2
-"set statusline=%F%m%r%h%w\ [LEN=%L]
-"execute "set statusline +=" . gitBranch
+let gitBranch=system("git rev-parse --abbrev-ref HEAD")
+
+set laststatus=2
+set statusline=%F%m%r%h%w\ 
+execute "set statusline +=" . gitBranch
 
 " coc config
 let g:coc_global_extensions = [
 \ 'coc-snippets',
-\ 'coc-pairs',
+\ 'coc-styled-components',
 \ 'coc-tsserver',
 \ 'coc-jest',
 \ 'coc-eslint', 
@@ -343,5 +343,5 @@ let g:mkdp_filetypes = ['markdown']
 " should be unique
 lua require("init") 
 
-nnoremap <C-_> :Telescope current_buffer_fuzzy_find sorting_strategy=ascending prompt_position=top <cr> 
+nnoremap <C-_> :Telescope current_buffer_fuzzy_find sorting_strategy=ascending prompt_position=top <CR>
 " nnoremap <leader>t lua require('telescope.builtin').current_buffer_fuzzy_find({sorting_strategy="ascending", prompt_position="top"})<cr>

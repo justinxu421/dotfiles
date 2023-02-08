@@ -5,7 +5,7 @@ vim.g.glow_border = "shadow"
 vim.keymap.set("n", "<leader>p", "<cmd>Glow<cr>")
 
 -- Native LSP Setup
-local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
+local capabilities = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol.make_client_capabilities())
 local lspconfig = require'lspconfig'
 lspconfig.gopls.setup{
   capabilities = capabilities,
@@ -21,9 +21,11 @@ lspconfig.gopls.setup{
   vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, {buffer=0})
   end,
 } -- connect to server
-
+    
 -- Treesitter
 require'nvim-treesitter.configs'.setup {
+  ensure_installed = { "python", "javascript", "typescript" },
+
   highlight = {
     enable = true,
     disable= { "lua" }

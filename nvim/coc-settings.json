@@ -10,7 +10,10 @@
     "graphql",
     "python"
   ],
+  "eslint.packageManager": "yarn",
+  "eslint.nodePath": ".yarn/sdks",
   "prettier.prettierPath": ".yarn/sdks/prettier",
+  "tsserver.tsdk": ".yarn/sdks/typescript/lib",
   "python.linting.flake8Enabled": true,
   "python.linting.mypyEnabled": false,
   "python.pythonPath": "~/.pyenv/versions/app",
@@ -26,5 +29,6 @@
         "usePlaceholders": true
       }
     }
-  }
+  },
+  "snippets.ultisnips.pythonPrompt": false
 }

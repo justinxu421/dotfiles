@@ -29,6 +29,7 @@ set clipboard=unnamedplus
 call plug#begin('~/.config/nvim/autoload/')
 
 "Colour scheme
+Plug 'sainnhe/sonokai'
 Plug 'phanviet/vim-monokai-pro'
 Plug 'psf/black', { 'branch': 'stable' }
 Plug 'luochen1990/rainbow'
@@ -98,7 +99,8 @@ call plug#end()
 
 set encoding=UTF-8
 set termguicolors
-colorscheme monokai_pro
+" colorscheme monokai_pro
+colorscheme sonokai
 
 
 let mapleader = ","
@@ -139,6 +141,10 @@ inoremap <silent><expr> <Tab>
 inoremap <expr> <Tab> coc#pum#visible() ? coc#pum#next(1) : "\<Tab>"
 inoremap <expr> <S-Tab> coc#pum#visible() ? coc#pum#prev(1) : "\<S-Tab>"
 
+" Use `[g` and `]g` to navigate diagnostics
+" Use `:CocDiagnostics` to get all diagnostics of current buffer in location list
+nmap <silent> [g <Plug>(coc-diagnostic-prev)
+nmap <silent> ]g <Plug>(coc-diagnostic-next)
 nnoremap ccd :CocDiagnostics<CR>
 nmap <C-n> :NERDTreeToggle<CR>
 nmap <leader>f :NERDTreeFind<CR>
@@ -177,7 +183,7 @@ execute "set statusline +=" . gitBranch
 " coc config
 let g:coc_global_extensions = [
 \ 'coc-snippets',
-\ 'coc-styled-components',
+"\ 'coc-styled-components',
 \ 'coc-tsserver',
 \ 'coc-jest',
 \ 'coc-eslint', 
@@ -194,6 +200,9 @@ nmap <silent> gd <Plug>(coc-definition)
 nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
+" Apply the most preferred quickfix action to fix diagnostic on the current line
+nmap <leader>q  <Plug>(coc-fix-current)
+
 
 " Use K to show documentation in preview window.
 nnoremap <silent> K :call ShowDocumentation()<CR>

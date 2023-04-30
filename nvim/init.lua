@@ -1,9 +1,14 @@
 vim.g.mapleader = ','
-vim.g.maplocalleader = ' '
+vim.g.maplocalleader = ','
 
--- Install package manager
---    https://github.com/folke/lazy.nvim
---    `:help lazy.nvim.txt` for more info
+vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv")
+vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv")
+
+-- fix the buffer pasting void register
+vim.keymap.set("x", "<leader>p", [["_dP]])
+-- replace word on
+vim.keymap.set("n", "<leader>s", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
+
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
 if not vim.loop.fs_stat(lazypath) then
   vim.fn.system {
@@ -22,6 +27,7 @@ require('lazy').setup({
   'tpope/vim-fugitive',
   'tpope/vim-rhubarb',
   'christoomey/vim-tmux-navigator',
+  'rmagatti/auto-session',
 
   -- Detect tabstop and shiftwidth automatically
   'tpope/vim-sleuth',
@@ -68,7 +74,6 @@ require('lazy').setup({
 
   {
     'sainnhe/sonokai',
-    priority = 1000,
     config = function()
       vim.cmd.colorscheme 'sonokai'
     end,
@@ -127,22 +132,24 @@ require('lazy').setup({
     build = ":TSUpdate",
   },
 
-  -- NOTE: Next Step on Your Neovim Journey: Add/Configure additional "plugins" for kickstart
-  --       These are some example plugins that I've included in the kickstart repository.
-  --       Uncomment any of the lines below to enable them.
-  -- require 'kickstart.plugins.autoformat',
-  -- require 'kickstart.plugins.debug',
+  {
+    'nvim-treesitter/nvim-treesitter-context',
+  },
 
-  -- NOTE: The import below automatically adds your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
-  --    You can use this folder to prevent any conflicts with this init.lua if you're interested in keeping
-  --    up-to-date with whatever is in the kickstart repo.
-  --
-  --    For additional information see: https://github.com/folke/lazy.nvim#-structuring-your-plugins
-  --
-  --    An additional note is that if you only copied in the `init.lua`, you can just comment this line
-  --    to get rid of the warning telling you that there are not plugins in `lua/custom/plugins/`.
   -- { import = 'custom.plugins' },
 }, {})
+
+require("auto-session").setup {
+  log_level = "error",
+
+  cwd_change_handling = {
+    auto_session_enabled = true,
+    auto_save_enabled = true,
+    post_cwd_changed_hook = function() -- example refreshing the lualine status line _after_ the cwd changes
+      require("lualine").refresh()     -- refresh lualine so the new session name is displayed in the status bar
+    end,
+  },
+}
 
 vim.o.hlsearch = true
 
@@ -177,22 +184,13 @@ vim.o.timeoutlen = 300
 
 -- Set completeopt to have a better completion experience
 vim.o.completeopt = 'menuone,noselect'
-
--- NOTE: You should make sure your terminal supports this
 vim.o.termguicolors = true
 
 -- [[ Basic Keymaps ]]
-
--- Keymaps for better default experience
--- See `:help vim.keymap.set()`
 vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
-
--- Remap for dealing with word wrap
 vim.keymap.set('n', 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
 vim.keymap.set('n', 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
 
--- [[ Highlight on yank ]]
--- See `:help vim.highlight.on_yank()`
 local highlight_group = vim.api.nvim_create_augroup('YankHighlight', { clear = true })
 vim.api.nvim_create_autocmd('TextYankPost', {
   callback = function()
@@ -204,8 +202,6 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 
 vim.cmd [[autocmd BufWritePre * lua vim.lsp.buf.format()]]
 
--- [[ Configure Telescope ]]
--- See `:help telescope` and `:help telescope.setup()`
 require('telescope').setup {
   defaults = {
     mappings = {
@@ -220,7 +216,6 @@ require('telescope').setup {
 -- Enable telescope fzf native, if installed
 pcall(require('telescope').load_extension, 'fzf')
 
--- See `:help telescope.builtin`
 vim.keymap.set('n', '<leader>?', require('telescope.builtin').oldfiles, { desc = '[?] Find recently opened files' })
 vim.keymap.set('n', '<leader><space>', require('telescope.builtin').buffers, { desc = '[ ] Find existing buffers' })
 vim.keymap.set('n', '<leader>/', function()
@@ -239,8 +234,6 @@ vim.keymap.set('n', '<C-f>', require('telescope.builtin').live_grep, { desc = '[
 vim.keymap.set('n', '<C-t>', require('telescope.builtin').resume, { desc = '[S]earch by [G]rep' })
 vim.keymap.set('n', '<leader>sd', require('telescope.builtin').diagnostics, { desc = '[S]earch [D]iagnostics' })
 
--- [[ Configure Treesitter ]]
--- See `:help nvim-treesitter`
 require('nvim-treesitter.configs').setup {
   -- Add languages to be installed here that you want installed for treesitter
   ensure_installed = { 'c', 'cpp', 'go', 'lua', 'python', 'rust', 'tsx', 'typescript', 'vimdoc', 'vim' },
@@ -303,6 +296,94 @@ require('nvim-treesitter.configs').setup {
       },
     },
   },
+}
+
+require 'treesitter-context'.setup {
+  enable = true,         -- Enable this plugin (Can be enabled/disabled later via commands)
+  max_lines = 0,         -- How many lines the window should span. Values <= 0 mean no limit.
+  trim_scope = 'outer',  -- Which context lines to discard if `max_lines` is exceeded. Choices: 'inner', 'outer'
+  min_window_height = 0, -- Minimum editor window height to enable context. Values <= 0 mean no limit.
+  patterns = {
+    -- Match patterns for TS nodes. These get wrapped to match at word boundaries.
+    -- For all filetypes
+    -- Note that setting an entry here replaces all other patterns for this entry.
+    -- By setting the 'default' entry below, you can control which nodes you want to
+    -- appear in the context window.
+    default = {
+      'def',
+      'class',
+      'function',
+      'method',
+      'for',
+      'while',
+      'if',
+      'switch',
+      'case',
+      'describe',
+      'it',
+      'const',
+    },
+    -- Patterns for specific filetypes
+    -- If a pattern is missing, *open a PR* so everyone can benefit.
+    javascript = {
+      'describe',
+      'it',
+      'const',
+    },
+    tex = {
+      'chapter',
+      'section',
+      'subsection',
+      'subsubsection',
+    },
+    rust = {
+      'impl_item',
+      'struct',
+      'enum',
+    },
+    scala = {
+      'object_definition',
+    },
+    vhdl = {
+      'process_statement',
+      'architecture_body',
+      'entity_declaration',
+    },
+    markdown = {
+      'section',
+    },
+    elixir = {
+      'anonymous_function',
+      'arguments',
+      'block',
+      'do_block',
+      'list',
+      'map',
+      'tuple',
+      'quoted_content',
+    },
+    json = {
+      'pair',
+    },
+    yaml = {
+      'block_mapping_pair',
+    },
+  },
+  exact_patterns = {
+    -- Example for a specific filetype with Lua patterns
+    -- Treat patterns.rust as a Lua pattern (i.e "^impl_item$" will
+    -- exactly match "impl_item" only)
+    -- rust = true,
+  },
+
+  -- [!] The options below are exposed but shouldn't require your attention,
+  --     you can safely ignore them.
+
+  zindex = 20,     -- The Z-index of the context window
+  mode = 'cursor', -- Line used to calculate context. Choices: 'cursor', 'topline'
+  -- Separator between context and content. Should be a single character string, like '-'.
+  -- When separator is set, the context will only show up when there are at least 2 lines above cursorline.
+  separator = nil,
 }
 
 -- Diagnostic keymaps

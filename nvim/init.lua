@@ -27,6 +27,8 @@ require('lazy').setup({
   -- Git related plugins
   'tpope/vim-fugitive',
   'tpope/vim-rhubarb',
+  'tpope/vim-surround',
+  'vim-test/vim-test',
   'christoomey/vim-tmux-navigator',
   'rmagatti/auto-session',
 
@@ -218,7 +220,7 @@ require('telescope').setup {
 pcall(require('telescope').load_extension, 'fzf')
 
 vim.keymap.set('n', '<leader>?', require('telescope.builtin').oldfiles, { desc = '[?] Find recently opened files' })
-vim.keymap.set('n', '<leader><space>', require('telescope.builtin').buffers, { desc = '[ ] Find existing buffers' })
+vim.keymap.set('n', '<leader><b>', require('telescope.builtin').buffers, { desc = '[ ] Find existing buffers' })
 vim.keymap.set('n', '<leader>/', function()
   -- You can pass additional configuration to telescope to change theme, layout, etc.
   require('telescope.builtin').current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
@@ -451,13 +453,10 @@ local servers = {
   -- clangd = {},
   -- gopls = {},
   pyright = {
-    python = {
-      pythonPath = "~/.pyenv/versions/restaurant/bin/python",
-    },
+    pythonPath = "~/.pyenv/versions/app/bin/python",
   },
   -- rust_analyzer = {},
-  -- tsserver = {},
-
+  tsserver = {},
   lua_ls = {
     Lua = {
       workspace = { checkThirdParty = false },
@@ -507,7 +506,7 @@ cmp.setup {
     ['<C-p>'] = cmp.mapping.select_prev_item(),
     ['<C-d>'] = cmp.mapping.scroll_docs(-4),
     ['<C-f>'] = cmp.mapping.scroll_docs(4),
-    ['<C-Space>'] = cmp.mapping.complete {},
+    ['<C-b>'] = cmp.mapping.complete {},
     ['<CR>'] = cmp.mapping.confirm {
       behavior = cmp.ConfirmBehavior.Replace,
       select = true,

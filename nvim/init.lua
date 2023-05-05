@@ -31,6 +31,7 @@ require('lazy').setup({
   'vim-test/vim-test',
   'christoomey/vim-tmux-navigator',
   'rmagatti/auto-session',
+  'psf/black',
 
   -- Detect tabstop and shiftwidth automatically
   'tpope/vim-sleuth',
@@ -203,7 +204,9 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   pattern = '*',
 })
 
-vim.cmd [[autocmd BufWritePre * lua vim.lsp.buf.format()]]
+vim.cmd [[autocmd BufWritePre .* lua vim.lsp.buf.format()]]
+vim.cmd [[autocmd BufWritePre *.py %!isort -d - ]]
+vim.cmd [[autocmd BufWritePre *.py :Black ]]
 
 require('telescope').setup {
   defaults = {
@@ -453,7 +456,7 @@ local servers = {
   -- clangd = {},
   -- gopls = {},
   pyright = {
-    pythonPath = "~/.pyenv/versions/app/bin/python",
+    venvPath = "~/.pyenv/versions/restaurant"
   },
   -- rust_analyzer = {},
   tsserver = {},

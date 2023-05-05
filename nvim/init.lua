@@ -552,6 +552,13 @@ cmp.setup {
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
 vim.cmd [[
+let test#strategy = {
+  \ 'nearest': 'neovim',
+  \ 'file':    'neovim',
+  \ 'suite':   'neovim',
+\}
+let g:test#neovim#start_normal = 1
+let g:rainbow_active = 1 "set to 0 if you want to enable it later via :RainbowToggle
 let g:test#javascript#jest#executable = 'yarn jest --group=-interaction'
 let g:test#python#runner = 'pytest'
 let g:test#python#pytest#executable = 'DJANGO_SETTTINGS_MODULE=learning.test_settings bin/pytest --lf --runintegration -Wignore'

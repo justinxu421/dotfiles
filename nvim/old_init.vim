@@ -172,8 +172,6 @@ command! -nargs=0 Prettier :CocCommand prettier.formatFile
 autocmd BufWritePre *.py call CocAction('format')
 autocmd BufWritePre *.go call CocAction('format')
 
-let g:NERDTreeWinSize=60
-
 let gitBranch=system("git rev-parse --abbrev-ref HEAD")
 
 set laststatus=2

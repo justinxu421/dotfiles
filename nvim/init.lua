@@ -551,3 +551,8 @@ cmp.setup {
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
+vim.cmd [[
+let g:test#javascript#jest#executable = 'yarn jest --group=-interaction'
+let g:test#python#runner = 'pytest'
+let g:test#python#pytest#executable = 'DJANGO_SETTTINGS_MODULE=learning.test_settings bin/pytest --lf --runintegration -Wignore'
+]]

@@ -422,11 +422,11 @@ vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = "Go to previous dia
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = "Go to next diagnostic message" })
 vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = "Open floating diagnostic message" })
 vim.keymap.set('n', 'ccd', vim.diagnostic.setloclist, { desc = "Open diagnostics list" })
-vim.keymap.set('n', 'gd', vim.lsp.buf.definition, { desc = '[G]oto [D]efinition' })
-vim.keymap.set('n', 'gr', require('telescope.builtin').lsp_references, { desc = '[G]oto [R]eferences' })
-vim.keymap.set('n', 'gI', vim.lsp.buf.implementation, { desc = '[G]oto [I]mplementation' })
-vim.keymap.set('n', 'K', vim.lsp.buf.hover, { desc = 'Hover Documentation' })
-vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, { desc = 'Signature Documentation' })
+-- vim.keymap.set('n', 'gd', vim.lsp.buf.definition, { desc = '[G]oto [D]efinition' })
+-- vim.keymap.set('n', 'gr', require('telescope.builtin').lsp_references, { desc = '[G]oto [R]eferences' })
+-- vim.keymap.set('n', 'gI', vim.lsp.buf.implementation, { desc = '[G]oto [I]mplementation' })
+-- vim.keymap.set('n', 'K', vim.lsp.buf.hover, { desc = 'Hover Documentation' })
+-- vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, { desc = 'Signature Documentation' })
 
 -- LSP settings.
 --  This function gets run when an LSP connects to a particular buffer.
@@ -441,10 +441,9 @@ local on_attach = function(_, bufnr)
 
   nmap('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
   nmap('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction')
-
-  nmap('<leader>qf', vim.lsp.buf.code_action({
-    only = { "quickfix" },
-  }), 'quick fix')
+  -- nmap('<leader>qf', vim.lsp.buf.code_action({
+  --   only = { "quickfix" },
+  -- }), 'quick fix')
 
   nmap('gd', vim.lsp.buf.definition, '[G]oto [D]efinition')
   nmap('gr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')
@@ -480,6 +479,12 @@ local servers = {
   -- clangd = {},
   -- gopls = {},
   pyright = {},
+  eslint = {
+    nodePath = '/Users/justin.xu/Klaviyo/Repos/fender/.yarn/sdks',
+    packageManager = 'yarn',
+    run = "onType",
+    quiet = false,
+  },
   -- rust_analyzer = {},
   tsserver = {},
   lua_ls = {

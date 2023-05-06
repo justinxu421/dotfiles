@@ -1,9 +1,24 @@
+vim.cmd [[
+" let g:python3_host_prog = expand('~/.pyenv/shims/python')
+let test#strategy = {
+  \ 'nearest': 'neovim',
+  \ 'file':    'neovim',
+  \ 'suite':   'neovim',
+\}
+let g:test#neovim#start_normal = 1
+let g:test#javascript#jest#executable = 'yarn jest --group=-interaction'
+let g:test#python#runner = 'pytest'
+let g:test#python#pytest#executable = 'DJANGO_SETTTINGS_MODULE=learning.test_settings bin/pytest --lf --runintegration -Wignore'
+]]
+
+vim.g.python3_host_prog = "expand('~/.pyenv/versions/app/bin/python')"
 vim.g.mapleader = ','
 vim.g.maplocalleader = ','
 
 vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv")
 vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv")
 vim.keymap.set("n", "<leader>cp", ":let @+ = expand('%')<CR>")
+-- vim.lsp.set_log_level("debug")
 
 -- fix the buffer pasting void register
 vim.keymap.set("x", "<leader>p", [["_dP]])
@@ -210,7 +225,7 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   pattern = '*',
 })
 
-vim.cmd [[autocmd BufWritePre .* lua vim.lsp.buf.format()]]
+vim.cmd [[autocmd BufWritePre * lua vim.lsp.buf.format()]]
 vim.cmd [[autocmd BufWritePre *.py %!isort -d - ]]
 vim.cmd [[autocmd BufWritePre *.py :Black ]]
 
@@ -240,7 +255,7 @@ end, { desc = '[/] Fuzzily search in current buffer' })
 
 vim.keymap.set('n', '<leader>gb', require('telescope.builtin').git_branches, { desc = '[G]it [B]ranches' })
 vim.keymap.set('n', '<C-p>', require('telescope.builtin').git_files, { desc = 'Search [G]it [F]iles' })
-vim.keymap.set('n', '<leader>sf', require('telescope.builtin').find_files, { desc = '[S]earch [F]iles' })
+vim.keymap.set('n', '<leader>ff', require('telescope.builtin').find_files, { desc = '[S]earch [F]iles' })
 vim.keymap.set('n', '<leader>sh', require('telescope.builtin').help_tags, { desc = '[S]earch [H]elp' })
 vim.keymap.set('n', '<leader>sw', require('telescope.builtin').grep_string, { desc = '[S]earch current [W]ord' })
 vim.keymap.set('n', '<C-f>', require('telescope.builtin').live_grep, { desc = '[S]earch by [G]rep' })
@@ -407,16 +422,15 @@ vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = "Go to previous dia
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = "Go to next diagnostic message" })
 vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = "Open floating diagnostic message" })
 vim.keymap.set('n', 'ccd', vim.diagnostic.setloclist, { desc = "Open diagnostics list" })
+vim.keymap.set('n', 'gd', vim.lsp.buf.definition, { desc = '[G]oto [D]efinition' })
+vim.keymap.set('n', 'gr', require('telescope.builtin').lsp_references, { desc = '[G]oto [R]eferences' })
+vim.keymap.set('n', 'gI', vim.lsp.buf.implementation, { desc = '[G]oto [I]mplementation' })
+vim.keymap.set('n', 'K', vim.lsp.buf.hover, { desc = 'Hover Documentation' })
+vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, { desc = 'Signature Documentation' })
 
 -- LSP settings.
 --  This function gets run when an LSP connects to a particular buffer.
 local on_attach = function(_, bufnr)
-  -- NOTE: Remember that lua is a real programming language, and as such it is possible
-  -- to define small helper and utility functions so you don't have to repeat yourself
-  -- many times.
-  --
-  -- In this case, we create a function that lets us more easily define mappings specific
-  -- for LSP related items. It sets the mode, buffer and description for us each time.
   local nmap = function(keys, func, desc)
     if desc then
       desc = 'LSP: ' .. desc
@@ -465,9 +479,7 @@ end
 local servers = {
   -- clangd = {},
   -- gopls = {},
-  pyright = {
-    venvPath = "~/.pyenv/versions/restaurant"
-  },
+  pyright = {},
   -- rust_analyzer = {},
   tsserver = {},
   lua_ls = {
@@ -548,18 +560,3 @@ cmp.setup {
     { name = 'luasnip' },
   },
 }
-
--- The line beneath this is called `modeline`. See `:help modeline`
--- vim: ts=2 sts=2 sw=2 et
-vim.cmd [[
-let test#strategy = {
-  \ 'nearest': 'neovim',
-  \ 'file':    'neovim',
-  \ 'suite':   'neovim',
-\}
-let g:test#neovim#start_normal = 1
-let g:rainbow_active = 1 "set to 0 if you want to enable it later via :RainbowToggle
-let g:test#javascript#jest#executable = 'yarn jest --group=-interaction'
-let g:test#python#runner = 'pytest'
-let g:test#python#pytest#executable = 'DJANGO_SETTTINGS_MODULE=learning.test_settings bin/pytest --lf --runintegration -Wignore'
-]]

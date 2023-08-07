@@ -11,7 +11,7 @@ let g:test#python#runner = 'pytest'
 let g:test#python#pytest#executable = 'DJANGO_SETTTINGS_MODULE=learning.test_settings bin/pytest --lf --runintegration -Wignore'
 ]]
 
-vim.g.python3_host_prog = "expand('~/.pyenv/versions/app/bin/python')"
+vim.g.python3_host_prog = "expand('~/.pyenv/versions/')"
 vim.g.mapleader = ','
 vim.g.maplocalleader = ','
 
@@ -51,6 +51,8 @@ require('lazy').setup({
   -- Detect tabstop and shiftwidth automatically
   'tpope/vim-sleuth',
 
+  { "jose-elias-alvarez/null-ls.nvim" },
+
   {
     -- LSP Configuration & Plugins
     'neovim/nvim-lspconfig',
@@ -75,7 +77,7 @@ require('lazy').setup({
   },
 
   -- Useful plugin to show you pending keybinds.
-  { 'folke/which-key.nvim',          opts = {} },
+  { 'folke/which-key.nvim',           opts = {} },
   {
     -- Adds git releated signs to the gutter, as well as utilities for managing changes
     'lewis6991/gitsigns.nvim',
@@ -102,12 +104,13 @@ require('lazy').setup({
     'nvim-lualine/lualine.nvim',
     opts = {
       options = {
-        icons_enabled = false,
-        theme = 'onedark',
+        icons_enabled = true,
+        theme = 'dracula',
         component_separators = '|',
         section_separators = '',
       },
       sections = {
+        lualine_b = { 'branch', 'diff', 'diagnostics' },
         lualine_c = {
           {
             'filename',
@@ -226,8 +229,9 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 })
 
 vim.cmd [[autocmd BufWritePre * lua vim.lsp.buf.format()]]
-vim.cmd [[autocmd BufWritePre *.py %!isort -d - ]]
-vim.cmd [[autocmd BufWritePre *.py :Black ]]
+-- vim.cmd [[autocmd BufWritePre *.js %!prettier --stdin-filepath %]]
+-- vim.cmd [[autocmd BufWritePre *.tsx %!prettier --stdin-filepath %]]
+vim.cmd [[au BufReadPost *.js set syntax=javascriptreact]]
 
 require('telescope').setup {
   defaults = {
@@ -266,7 +270,7 @@ vim.keymap.set('n', '<leader>T', ':TestFile<CR>')
 
 require('nvim-treesitter.configs').setup {
   -- Add languages to be installed here that you want installed for treesitter
-  ensure_installed = { 'c', 'cpp', 'go', 'lua', 'python', 'rust', 'tsx', 'typescript', 'vimdoc', 'vim' },
+  ensure_installed = { 'c', 'cpp', 'go', 'lua', 'python', 'rust', 'javascript', 'tsx', 'typescript', 'vimdoc', 'vim' },
 
   -- Autoinstall languages that are not installed. Defaults to false (but you can change for yourself!)
   auto_install = false,
@@ -445,10 +449,11 @@ local on_attach = function(_, bufnr)
   --   only = { "quickfix" },
   -- }), 'quick fix')
 
+  nmap('gp', [[:silent %!prettier --stdin-filepath %<CR>]])
   nmap('gd', vim.lsp.buf.definition, '[G]oto [D]efinition')
   nmap('gr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')
   nmap('gI', vim.lsp.buf.implementation, '[G]oto [I]mplementation')
-  nmap('<leader>D', vim.lsp.buf.type_definition, 'Type [D]efinition')
+  nmap('gy', vim.lsp.buf.type_definition, 'Type [D]efinition')
   nmap('<leader>ds', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols')
   nmap('<leader>ws', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
 
@@ -466,9 +471,28 @@ local on_attach = function(_, bufnr)
 
   -- Create a command `:Format` local to the LSP buffer
   vim.api.nvim_buf_create_user_command(bufnr, 'Format', function(_)
+    -- vim.cmd [[%!isort -d - ]]
+    vim.cmd [[:%!black - -q]]
     vim.lsp.buf.format()
   end, { desc = 'Format current buffer with LSP' })
 end
+
+local null_ls = require("null-ls")
+null_ls.setup({
+  sources = {
+    null_ls.builtins.formatting.prettier.with({
+      prefer_local = 'node_modules/.bin',
+    })
+  },
+  on_attach = function(client, bufnr)
+    local augroup = vim.api.nvim_create_augroup('null_format', { clear = true })
+    vim.api.nvim_create_autocmd('BufWritePre', {
+      group = augroup,
+      buffer = bufnr,
+      desc = 'Fix and format',
+    })
+  end,
+})
 
 -- Enable the following language servers
 --  Feel free to add/remove any LSPs that you want here. They will automatically be installed.
@@ -518,7 +542,6 @@ mason_lspconfig.setup_handlers {
     }
   end,
 }
-
 -- nvim-cmp setup
 local cmp = require 'cmp'
 local luasnip = require 'luasnip'

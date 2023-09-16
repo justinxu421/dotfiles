@@ -46,12 +46,16 @@ require('lazy').setup({
   'vim-test/vim-test',
   'christoomey/vim-tmux-navigator',
   'rmagatti/auto-session',
-  'psf/black',
 
   -- Detect tabstop and shiftwidth automatically
   'tpope/vim-sleuth',
 
   { "jose-elias-alvarez/null-ls.nvim" },
+  { "ThePrimeagen/harpoon",           dependencies = { "nvim-lua/plenary.nvim" } },
+  {
+    'stevearc/dressing.nvim',
+    opts = {},
+  },
 
   {
     -- LSP Configuration & Plugins
@@ -77,7 +81,7 @@ require('lazy').setup({
   },
 
   -- Useful plugin to show you pending keybinds.
-  { 'folke/which-key.nvim',           opts = {} },
+  { 'folke/which-key.nvim',          opts = {} },
   {
     -- Adds git releated signs to the gutter, as well as utilities for managing changes
     'lewis6991/gitsigns.nvim',
@@ -110,7 +114,8 @@ require('lazy').setup({
         section_separators = '',
       },
       sections = {
-        lualine_b = { 'branch', 'diff', 'diagnostics' },
+        -- lualine_b = { 'branch', 'diff', 'diagnostics' },
+        lualine_b = {},
         lualine_c = {
           {
             'filename',
@@ -229,8 +234,6 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 })
 
 vim.cmd [[autocmd BufWritePre * lua vim.lsp.buf.format()]]
--- vim.cmd [[autocmd BufWritePre *.js %!prettier --stdin-filepath %]]
--- vim.cmd [[autocmd BufWritePre *.tsx %!prettier --stdin-filepath %]]
 vim.cmd [[au BufReadPost *.js set syntax=javascriptreact]]
 
 require('telescope').setup {
@@ -468,20 +471,32 @@ local on_attach = function(_, bufnr)
   nmap('<leader>wl', function()
     print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
   end, '[W]orkspace [L]ist Folders')
+  nmap('<leader>ha', require("harpoon.mark").add_file, "Add mark")
+  nmap('<leader>hl', require("harpoon.ui").toggle_quick_menu, "Harpoon quick menu")
+  nmap('<leader>hn', require("harpoon.ui").nav_next, "Harpoon next")
+  nmap('<leader>hb', require("harpoon.ui").nav_prev, "Harpoon prev")
 
   -- Create a command `:Format` local to the LSP buffer
   vim.api.nvim_buf_create_user_command(bufnr, 'Format', function(_)
-    -- vim.cmd [[%!isort -d - ]]
-    vim.cmd [[:%!black - -q]]
+    vim.cmd [[%!black - -q]]
+    vim.cmd [[%!isort -d - ]]
     vim.lsp.buf.format()
-  end, { desc = 'Format current buffer with LSP' })
+    vim.cmd [[:noa w]]
+  end, { desc = 'Format current buffer with black' })
+
+  vim.api.nvim_buf_create_user_command(bufnr, 'Prettier', function(_)
+    local fmt_command = '%!prettier --stdin-filepath %'
+    local cursor = vim.api.nvim_win_get_cursor(0)
+    vim.cmd(fmt_command)
+    vim.cmd [[:noa w]]
+  end, { desc = 'Format current buffer with prettier' })
 end
 
 local null_ls = require("null-ls")
 null_ls.setup({
   sources = {
     null_ls.builtins.formatting.prettier.with({
-      prefer_local = 'node_modules/.bin',
+      prefer_local = '/Users/justin.xu/Klaviyo//Repos/fender/.yarn/sdks/prettier',
     })
   },
   on_attach = function(client, bufnr)
@@ -490,6 +505,8 @@ null_ls.setup({
       group = augroup,
       buffer = bufnr,
       desc = 'Fix and format',
+      callback = function()
+      end
     })
   end,
 })

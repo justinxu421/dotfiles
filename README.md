@@ -10,3 +10,6 @@ Stolen from https://www.josean.com/posts/tmux-setup
 2. git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 3. tmux source ~/.tmux.conf
 4. To install plugins `prefix + I`, by default `prefix = Ctrl + b`
+
+## Powerlevel 10k
+1. Follow instructions from: https://github.com/romkatv/powerlevel10k#installation

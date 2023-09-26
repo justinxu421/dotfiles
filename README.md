@@ -3,7 +3,6 @@
 ## Nvim
 1. Install https://neovim.io/
 2. Install VimPlug https://github.com/junegunn/vim-plug/
-3. To install plugins, go into `nvim` and run `:Plug Install`
 
 ## Tmux
 Stolen from https://www.josean.com/posts/tmux-setup

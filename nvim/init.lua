@@ -235,6 +235,7 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 
 vim.cmd [[autocmd BufWritePre * lua vim.lsp.buf.format()]]
 vim.cmd [[au BufReadPost *.js set syntax=javascriptreact]]
+vim.cmd [[au BufReadPost *.js set filetype=javascriptreact]]
 
 require('telescope').setup {
   defaults = {

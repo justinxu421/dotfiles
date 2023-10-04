@@ -1,0 +1,32 @@
+{
+  "workspace.workspaceFolderCheckCwd": false,
+  "coc.preferences.formatOnSaveFiletypes": [
+    "javascript",
+    "typescript",
+    "typescriptreact",
+    "json",
+    "javascriptreact",
+    "typescript.tsx",
+    "graphql",
+    "python"
+  ],
+  "eslint.packageManager": "yarn",
+  "eslint.nodePath": ".yarn/sdks",
+  "prettier.prettierPath": ".yarn/sdks/prettier",
+  "tsserver.tsdk": ".yarn/sdks/typescript/lib",
+  "python.linting.flake8Enabled": true,
+  "python.linting.mypyEnabled": false,
+  "python.sortImports.path": "~/.pyenv/versions/app/bin/isort",
+  "python.formatting.provider": "black",
+  "languageserver": {
+    "golang": {
+      "command": "gopls",
+      "rootPatterns": ["go.work", "go.mod", ".vim/", ".git/", ".hg/"],
+      "filetypes": ["go"],
+      "initializationOptions": {
+        "usePlaceholders": true
+      }
+    }
+  },
+  "snippets.ultisnips.pythonPrompt": false
+}

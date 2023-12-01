@@ -515,17 +515,21 @@ local on_attach = function(_, bufnr)
 
   -- Create a command `:Format` local to the LSP buffer
   vim.api.nvim_buf_create_user_command(bufnr, 'Format', function(_)
+    vim.cmd [[:mark a]]
     vim.cmd [[%!black - -q]]
     vim.cmd [[%!isort -d - ]]
     vim.lsp.buf.format()
     vim.cmd [[:noa w]]
+    vim.cmd [[normal `a]]
   end, { desc = 'Format current buffer with black' })
 
   vim.api.nvim_buf_create_user_command(bufnr, 'Prettier', function(_)
+    vim.cmd [[:mark a]]
     local fmt_command = '%!yarn prettier --stdin-filepath %'
     local cursor = vim.api.nvim_win_get_cursor(0)
     vim.cmd(fmt_command)
     vim.cmd [[:noa w]]
+    vim.cmd [[normal `a]]
   end, { desc = 'Format current buffer with prettier' })
 end
 

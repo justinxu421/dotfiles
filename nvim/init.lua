@@ -50,6 +50,12 @@ require('lazy').setup({
   -- Detect tabstop and shiftwidth automatically
   'tpope/vim-sleuth',
 
+  {
+    'stevearc/oil.nvim',
+    opts = {},
+    -- Optional dependencies
+    dependencies = { "nvim-tree/nvim-web-devicons" },
+  },
   { "jose-elias-alvarez/null-ls.nvim" },
   { "ThePrimeagen/harpoon",           dependencies = { "nvim-lua/plenary.nvim" } },
   {
@@ -172,6 +178,7 @@ require('lazy').setup({
   -- { import = 'custom.plugins' },
 }, {})
 
+require("oil").setup()
 require("auto-session").setup {
   log_level = "error",
 
@@ -188,6 +195,7 @@ vim.o.hlsearch = true
 
 -- Make line numbers default
 vim.wo.number = true
+vim.wo.relativenumber = true
 
 -- Enable mouse mode
 vim.o.mouse = 'a'
@@ -236,6 +244,7 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 vim.cmd [[autocmd BufWritePre * lua vim.lsp.buf.format()]]
 vim.cmd [[au BufReadPost *.js set syntax=javascriptreact]]
 vim.cmd [[au BufReadPost *.js set filetype=javascriptreact]]
+vim.cmd [[au BufReadPost *.stories.mdx set filetype=javascriptreact]]
 
 require('telescope').setup {
   defaults = {
@@ -436,6 +445,33 @@ vim.keymap.set('n', 'ccd', vim.diagnostic.setloclist, { desc = "Open diagnostics
 -- vim.keymap.set('n', 'K', vim.lsp.buf.hover, { desc = 'Hover Documentation' })
 -- vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, { desc = 'Signature Documentation' })
 
+-- vim.opt.foldmethod = "expr"
+-- vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
+--
+-- local M = {}
+-- -- function to create a list of commands and convert them to autocommands
+-- -------- This function is taken from https://github.com/norcalli/nvim_utils
+-- function M.nvim_create_augroups(definitions)
+--   for group_name, definition in pairs(definitions) do
+--     vim.api.nvim_command('augroup ' .. group_name)
+--     vim.api.nvim_command('autocmd!')
+--     for _, def in ipairs(definition) do
+--       local command = table.concat(vim.tbl_flatten { 'autocmd', def }, ' ')
+--       vim.api.nvim_command(command)
+--     end
+--     vim.api.nvim_command('augroup END')
+--   end
+-- end
+--
+-- local autoCommands = {
+--   -- other autocommands
+--   open_folds = {
+--     { "BufReadPost,FileReadPost", "*", "normal zR" }
+--   }
+-- }
+--
+-- M.nvim_create_augroups(autoCommands)
+
 -- LSP settings.
 --  This function gets run when an LSP connects to a particular buffer.
 local on_attach = function(_, bufnr)
@@ -453,7 +489,7 @@ local on_attach = function(_, bufnr)
   --   only = { "quickfix" },
   -- }), 'quick fix')
 
-  nmap('gp', [[:silent %!prettier --stdin-filepath %<CR>]])
+  nmap('gp', [[:silent %!yarn prettier --stdin-filepath %<CR>]])
   nmap('gd', vim.lsp.buf.definition, '[G]oto [D]efinition')
   nmap('gr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')
   nmap('gI', vim.lsp.buf.implementation, '[G]oto [I]mplementation')
@@ -486,7 +522,7 @@ local on_attach = function(_, bufnr)
   end, { desc = 'Format current buffer with black' })
 
   vim.api.nvim_buf_create_user_command(bufnr, 'Prettier', function(_)
-    local fmt_command = '%!prettier --stdin-filepath %'
+    local fmt_command = '%!yarn prettier --stdin-filepath %'
     local cursor = vim.api.nvim_win_get_cursor(0)
     vim.cmd(fmt_command)
     vim.cmd [[:noa w]]
@@ -497,7 +533,7 @@ local null_ls = require("null-ls")
 null_ls.setup({
   sources = {
     null_ls.builtins.formatting.prettier.with({
-      prefer_local = '/Users/justin.xu/Klaviyo//Repos/fender/.yarn/sdks/prettier',
+      prefer_local = '/Users/justinxu/Klaviyo//Repos/fender/.yarn/sdks/prettier',
     })
   },
   on_attach = function(client, bufnr)
@@ -522,7 +558,7 @@ local servers = {
   -- gopls = {},
   pyright = {},
   eslint = {
-    nodePath = '/Users/justin.xu/Klaviyo/Repos/fender/.yarn/sdks',
+    nodePath = '/Users/justinxu/Klaviyo/Repos/fender/.yarn/sdks',
     packageManager = 'yarn',
     run = "onType",
     quiet = false,

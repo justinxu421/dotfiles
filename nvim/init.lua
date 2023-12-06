@@ -39,10 +39,15 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 require('lazy').setup({
+  {
+    'stevearc/oil.nvim',
+    dependencies = { "nvim-tree/nvim-web-devicons" },
+  },
   -- Git related plugins
   'tpope/vim-fugitive',
   'tpope/vim-rhubarb',
   'tpope/vim-surround',
+  'tpope/vim-vinegar',
   'vim-test/vim-test',
   'christoomey/vim-tmux-navigator',
   'rmagatti/auto-session',
@@ -50,12 +55,6 @@ require('lazy').setup({
   -- Detect tabstop and shiftwidth automatically
   'tpope/vim-sleuth',
 
-  {
-    'stevearc/oil.nvim',
-    opts = {},
-    -- Optional dependencies
-    dependencies = { "nvim-tree/nvim-web-devicons" },
-  },
   { "jose-elias-alvarez/null-ls.nvim" },
   { "ThePrimeagen/harpoon",           dependencies = { "nvim-lua/plenary.nvim" } },
   {
@@ -178,7 +177,10 @@ require('lazy').setup({
   -- { import = 'custom.plugins' },
 }, {})
 
-require("oil").setup()
+require("oil").setup({
+  default_file_explorer = false
+})
+
 require("auto-session").setup {
   log_level = "error",
 
@@ -192,7 +194,6 @@ require("auto-session").setup {
 }
 
 vim.o.hlsearch = true
-
 -- Make line numbers default
 vim.wo.number = true
 vim.wo.relativenumber = true
@@ -242,6 +243,8 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 })
 
 vim.cmd [[autocmd BufWritePre * lua vim.lsp.buf.format()]]
+vim.cmd [[autocmd BufWritePre *.ts :Prettier]]
+vim.cmd [[autocmd BufWritePre *.tsx :Prettier]]
 vim.cmd [[au BufReadPost *.js set syntax=javascriptreact]]
 vim.cmd [[au BufReadPost *.js set filetype=javascriptreact]]
 vim.cmd [[au BufReadPost *.stories.mdx set filetype=javascriptreact]]
@@ -439,11 +442,6 @@ vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = "Go to previous dia
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = "Go to next diagnostic message" })
 vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = "Open floating diagnostic message" })
 vim.keymap.set('n', 'ccd', vim.diagnostic.setloclist, { desc = "Open diagnostics list" })
--- vim.keymap.set('n', 'gd', vim.lsp.buf.definition, { desc = '[G]oto [D]efinition' })
--- vim.keymap.set('n', 'gr', require('telescope.builtin').lsp_references, { desc = '[G]oto [R]eferences' })
--- vim.keymap.set('n', 'gI', vim.lsp.buf.implementation, { desc = '[G]oto [I]mplementation' })
--- vim.keymap.set('n', 'K', vim.lsp.buf.hover, { desc = 'Hover Documentation' })
--- vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, { desc = 'Signature Documentation' })
 
 -- vim.opt.foldmethod = "expr"
 -- vim.opt.foldexpr = "nvim_treesitter#foldexpr()"

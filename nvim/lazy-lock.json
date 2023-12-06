@@ -20,8 +20,6 @@
   "nvim-treesitter": { "branch": "master", "commit": "39a78192fbcee43f0b9134d668663b0cfc1e082b" },
   "nvim-treesitter-context": { "branch": "master", "commit": "0226dd639712141235d5c9eefde47365d15d0535" },
   "nvim-treesitter-textobjects": { "branch": "master", "commit": "5632f926833493bf44de3d0c214169a062b068df" },
-  "nvim-web-devicons": { "branch": "master", "commit": "5efb8bd06841f91f97c90e16de85e96d57e9c862" },
-  "oil.nvim": { "branch": "master", "commit": "e89a8f8adeef2dfab851fd056d38ee7afc97c249" },
   "plenary.nvim": { "branch": "master", "commit": "9ac3e9541bbabd9d73663d757e4fe48a675bb054" },
   "sonokai": { "branch": "master", "commit": "a9b2a3e83ed4fa7a5541e41be9becaa7b436edcf" },
   "telescope-fzf-native.nvim": { "branch": "main", "commit": "580b6c48651cabb63455e97d7e131ed557b8c7e2" },
@@ -32,5 +30,6 @@
   "vim-surround": { "branch": "master", "commit": "3d188ed2113431cf8dac77be61b842acb64433d9" },
   "vim-test": { "branch": "master", "commit": "c19be85a9b3d8b86f37533bfeb82cbe189cd895e" },
   "vim-tmux-navigator": { "branch": "master", "commit": "cdd66d6a37d991bba7997d593586fc51a5b37aa8" },
+  "vim-vinegar": { "branch": "master", "commit": "bb1bcddf43cfebe05eb565a84ab069b357d0b3d6" },
   "which-key.nvim": { "branch": "main", "commit": "af8f26bfbb61b5f722c9fbc72b296dc9db0bcfdc" }
 }

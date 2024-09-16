@@ -14,6 +14,10 @@ let g:test#python#pytest#executable = 'DJANGO_SETTTINGS_MODULE=learning.test_set
 vim.g.python3_host_prog = "expand('~/.pyenv/versions/')"
 vim.g.mapleader = ','
 vim.g.maplocalleader = ','
+vim.g.copilot_no_tab_map = true
+vim.api.nvim_set_keymap("i", "<C-J>", 'copilot#Accept("<CR>")', { silent = true, expr = true })
+
+vim.keymap.set('i', '<C-L>', '<Plug>(copilot-suggest)')
 
 vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv")
 vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv")
@@ -42,6 +46,29 @@ require('lazy').setup({
   {
     'stevearc/oil.nvim',
     dependencies = { "nvim-tree/nvim-web-devicons" },
+  },
+  {
+    "folke/todo-comments.nvim",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    opts = {
+      -- your configuration comes here
+      -- or leave it empty to use the default settings
+      -- refer to the configuration section below
+    }
+  },
+  'github/copilot.vim',
+  {
+    "CopilotC-Nvim/CopilotChat.nvim",
+    branch = "canary",
+    dependencies = {
+      { "zbirenbaum/copilot.lua" }, -- or github/copilot.vim
+      { "nvim-lua/plenary.nvim" },  -- for curl, log wrapper
+    },
+    opts = {
+      debug = true, -- Enable debugging
+      -- See Configuration section for rest
+    },
+    -- See Commands section for default commands if you want to lazy load on them
   },
   -- Git related plugins
   'tpope/vim-fugitive',
@@ -229,6 +256,8 @@ vim.o.completeopt = 'menuone,noselect'
 vim.o.termguicolors = true
 
 -- [[ Basic Keymaps ]]
+-- copy vim clip to OS clipboard
+vim.keymap.set("n", "<Leader>c", ":call setreg('+', getreg('@'))<CR>", opts)
 vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
 vim.keymap.set('n', 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
 vim.keymap.set('n', 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
@@ -243,8 +272,8 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 })
 
 vim.cmd [[autocmd BufWritePre * lua vim.lsp.buf.format()]]
-vim.cmd [[autocmd BufWritePre *.ts :Prettier]]
 vim.cmd [[autocmd BufWritePre *.tsx :Prettier]]
+vim.cmd [[autocmd BufWritePre *.ts :Prettier]]
 vim.cmd [[au BufReadPost *.js set syntax=javascriptreact]]
 vim.cmd [[au BufReadPost *.js set filetype=javascriptreact]]
 vim.cmd [[au BufReadPost *.stories.mdx set filetype=javascriptreact]]
@@ -277,7 +306,7 @@ vim.keymap.set('n', '<leader>gb', require('telescope.builtin').git_branches, { d
 vim.keymap.set('n', '<C-p>', require('telescope.builtin').git_files, { desc = 'Search [G]it [F]iles' })
 vim.keymap.set('n', '<leader>ff', require('telescope.builtin').find_files, { desc = '[S]earch [F]iles' })
 vim.keymap.set('n', '<leader>sh', require('telescope.builtin').help_tags, { desc = '[S]earch [H]elp' })
-vim.keymap.set('n', '<leader>sw', require('telescope.builtin').grep_string, { desc = '[S]earch current [W]ord' })
+vim.keymap.set('n', '<leader>w', require('telescope.builtin').grep_string, { desc = '[S]earch current [W]ord' })
 vim.keymap.set('n', '<C-f>', require('telescope.builtin').live_grep, { desc = '[S]earch by [G]rep' })
 vim.keymap.set('n', '<C-t>', require('telescope.builtin').resume, { desc = '[S]earch by [G]rep' })
 vim.keymap.set('n', '<leader>sd', require('telescope.builtin').diagnostics, { desc = '[S]earch [D]iagnostics' })
@@ -558,7 +587,20 @@ null_ls.setup({
 local servers = {
   -- clangd = {},
   -- gopls = {},
-  pyright = {},
+  pyright = {
+    settings = {
+      pyright = {
+        autoImportCompletion = true,
+      },
+      python = {
+        analysis = {
+          autoSearchPaths = true,
+          diagnosticMode = "openFilesOnly",
+          useLibraryCodeForTypes = true,
+        }
+      }
+    },
+  },
   eslint = {
     nodePath = '/Users/justinxu/Klaviyo/Repos/fender/.yarn/sdks',
     packageManager = 'yarn',

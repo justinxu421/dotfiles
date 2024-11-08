@@ -83,7 +83,11 @@ require('lazy').setup({
   'tpope/vim-sleuth',
 
   { "jose-elias-alvarez/null-ls.nvim" },
-  { "ThePrimeagen/harpoon",           dependencies = { "nvim-lua/plenary.nvim" } },
+  {
+    "ThePrimeagen/harpoon",
+    branch = "harpoon2",
+    required = { "nvim-lua/plenary.nvim" }
+  },
   {
     'stevearc/dressing.nvim',
     opts = {},
@@ -113,7 +117,7 @@ require('lazy').setup({
   },
 
   -- Useful plugin to show you pending keybinds.
-  { 'folke/which-key.nvim',          opts = {} },
+  { 'folke/which-key.nvim',           opts = {} },
   {
     -- Adds git releated signs to the gutter, as well as utilities for managing changes
     'lewis6991/gitsigns.nvim',
@@ -261,6 +265,8 @@ vim.keymap.set("n", "<Leader>c", ":call setreg('+', getreg('@'))<CR>", opts)
 vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
 vim.keymap.set('n', 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
 vim.keymap.set('n', 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
+-- Make oil the default
+vim.keymap.set("n", "-", "<CMD>Oil<CR>", { desc = "Open parent directory" })
 
 local highlight_group = vim.api.nvim_create_augroup('YankHighlight', { clear = true })
 vim.api.nvim_create_autocmd('TextYankPost', {
@@ -535,12 +541,16 @@ local on_attach = function(_, bufnr)
   nmap('<leader>wl', function()
     print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
   end, '[W]orkspace [L]ist Folders')
-  nmap('<leader>ha', require("harpoon.mark").add_file, "Add mark")
-  nmap('<leader>hl', require("harpoon.ui").toggle_quick_menu, "Harpoon quick menu")
-  nmap('<leader>hn', require("harpoon.ui").nav_next, "Harpoon next")
-  nmap('<leader>hb', require("harpoon.ui").nav_prev, "Harpoon prev")
+
+  local harpoon = require("harpoon")
+  harpoon:setup()
+  vim.keymap.set("n", "<leader>ha", function() harpoon:list():add() end)
+  vim.keymap.set("n", "<leader>hl", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end)
 
   -- Create a command `:Format` local to the LSP buffer
+  vim.api.nvim_buf_create_user_command(bufnr, 'Scratch', function(_)
+    vim.cmd [[:e src/learning/app/.scratch]]
+  end, { desc = 'Go to scratch file' })
   vim.api.nvim_buf_create_user_command(bufnr, 'Format', function(_)
     vim.cmd [[:mark a]]
     vim.cmd [[%!black - -q]]

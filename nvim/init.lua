@@ -78,6 +78,18 @@ require('lazy').setup({
   'vim-test/vim-test',
   'christoomey/vim-tmux-navigator',
   'rmagatti/auto-session',
+  'Exafunction/codeium.vim',
+  {
+    "themaxmarchuk/tailwindcss-colors.nvim",
+    dependencies = "neovim/nvim-lspconfig",
+    ft = { "aspnetcorerazor", "astro", "astro-markdown", "blade", "clojure", "django-html", "htmldjango", "edge",
+      "eelixir", "elixir",
+      "ejs", "erb", "eruby", "gohtml", "haml", "handlebars", "hbs", "html", "html-eex", "heex", "jade", "leaf", "liquid",
+      "markdown",
+      "mdx", "mustache", "njk", "nunjucks", "php", "razor", "slim", "twig", "css", "less", "postcss", "sass", "scss",
+      "stylus", "sugarss",
+      "javascript", "javascriptreact", "reason", "rescript", "typescript", "typescriptreact", "vue", "svelte" },
+  },
 
   -- Detect tabstop and shiftwidth automatically
   'tpope/vim-sleuth',
@@ -209,7 +221,7 @@ require('lazy').setup({
 }, {})
 
 require("oil").setup({
-  default_file_explorer = false
+  default_file_explorer = true
 })
 
 require("auto-session").setup {
@@ -278,8 +290,8 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 })
 
 vim.cmd [[autocmd BufWritePre * lua vim.lsp.buf.format()]]
-vim.cmd [[autocmd BufWritePre *.tsx :Prettier]]
 vim.cmd [[autocmd BufWritePre *.ts :Prettier]]
+vim.cmd [[autocmd BufWritePre *.tsx :Prettier]]
 vim.cmd [[au BufReadPost *.js set syntax=javascriptreact]]
 vim.cmd [[au BufReadPost *.js set filetype=javascriptreact]]
 vim.cmd [[au BufReadPost *.stories.mdx set filetype=javascriptreact]]
@@ -546,6 +558,14 @@ local on_attach = function(_, bufnr)
   harpoon:setup()
   vim.keymap.set("n", "<leader>ha", function() harpoon:list():add() end)
   vim.keymap.set("n", "<leader>hl", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end)
+
+  vim.api.nvim_buf_create_user_command(bufnr, 'Black', function(_)
+    vim.cmd [[:mark a]]
+    vim.cmd [[%!black - -q]]
+    vim.lsp.buf.format()
+    vim.cmd [[:noa w]]
+    vim.cmd [[normal `a]]
+  end, { desc = 'Format current buffer with black' })
 
   -- Create a command `:Format` local to the LSP buffer
   vim.api.nvim_buf_create_user_command(bufnr, 'Scratch', function(_)

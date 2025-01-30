@@ -1,4 +1,12 @@
-theme="Monokai Pro"
-font-size=20
-background-opacity = 0.8
+theme = "Monokai Pro"
+font-size = 18
+background-opacity = 0.7
 background-blur-radius = 20
+
+keybind = ctrl+s>v=new_split:right
+keybind = ctrl+s>s=new_split:down
+
+keybind = ctrl+s>j=goto_split:bottom
+keybind = ctrl+s>k=goto_split:top
+keybind = ctrl+s>h=goto_split:left
+keybind = ctrl+s>l=goto_split:right

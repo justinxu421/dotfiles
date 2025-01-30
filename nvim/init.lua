@@ -78,7 +78,7 @@ require('lazy').setup({
   'vim-test/vim-test',
   'christoomey/vim-tmux-navigator',
   'rmagatti/auto-session',
-  'Exafunction/codeium.vim',
+  -- 'Exafunction/codeium.vim',
   {
     "themaxmarchuk/tailwindcss-colors.nvim",
     dependencies = "neovim/nvim-lspconfig",
@@ -175,14 +175,11 @@ require('lazy').setup({
   },
 
   {
-    -- Add indentation guides even on blank lines
-    'lukas-reineke/indent-blankline.nvim',
-    -- Enable `lukas-reineke/indent-blankline.nvim`
-    -- See `:help indent_blankline.txt`
-    opts = {
-      char = '┊',
-      show_trailing_blankline_indent = false,
-    },
+    "lukas-reineke/indent-blankline.nvim",
+    main = "ibl",
+    ---@module "ibl"
+    ---@type ibl.config
+    opts = {},
   },
 
   -- "gc" to comment visual regions/lines
@@ -290,8 +287,8 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 })
 
 vim.cmd [[autocmd BufWritePre * lua vim.lsp.buf.format()]]
-vim.cmd [[autocmd BufWritePre *.ts :Prettier]]
-vim.cmd [[autocmd BufWritePre *.tsx :Prettier]]
+-- vim.cmd [[autocmd BufWritePre *.ts :Prettier]]
+-- vim.cmd [[autocmd BufWritePre *.tsx :Prettier]]
 vim.cmd [[au BufReadPost *.js set syntax=javascriptreact]]
 vim.cmd [[au BufReadPost *.js set filetype=javascriptreact]]
 vim.cmd [[au BufReadPost *.stories.mdx set filetype=javascriptreact]]

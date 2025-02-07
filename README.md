@@ -16,4 +16,15 @@ Stolen from https://www.josean.com/posts/tmux-setup
 ## Yazi
 1. `brew install yazi ffmpegthumbnailer ffmpeg sevenzip jq poppler fd ripgrep fzf zoxide imagemagick font-symbols-only-nerd-font`
 2. `ya pack -a dangooddd/kanagawa` https://github.com/dangooddd/kanagawa.yazi
-
+3. To `~/.zshrc` add in
+```
+function y() {
+	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
+	yazi "$@" --cwd-file="$tmp"
+	if cwd="$(command cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
+		builtin cd -- "$cwd"
+	fi
+	rm -f -- "$tmp"
+}
+export EDITOR=nvim
+```

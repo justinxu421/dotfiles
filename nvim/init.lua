@@ -15,9 +15,23 @@ vim.g.python3_host_prog = "expand('~/.pyenv/versions/')"
 vim.g.mapleader = ','
 vim.g.maplocalleader = ','
 vim.g.copilot_no_tab_map = true
+
 vim.api.nvim_set_keymap("i", "<C-J>", 'copilot#Accept("<CR>")', { silent = true, expr = true })
+vim.keymap.set('i', '<C-J>', '<cmd>call augment#Accept()<CR>', { noremap = true })
+vim.keymap.set('n', '<leader>ac', '<cmd>call augment#chat#Toggle()<CR>', { noremap = true })
 
 vim.keymap.set('i', '<C-L>', '<Plug>(copilot-suggest)')
+
+vim.api.nvim_create_autocmd('ColorScheme', {
+  pattern = 'peachpuff',
+  callback = function()
+    vim.api.nvim_set_hl(0, 'AugmentSuggestionHighlight', {
+      fg = 'e7eb09',
+      ctermfg = 8,
+      force = true
+    })
+  end
+})
 
 vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv")
 vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv")
@@ -58,14 +72,18 @@ require('lazy').setup({
   },
   -- 'github/copilot.vim',
   {
+    'augmentcode/augment.vim',
+  },
+  {
     "CopilotC-Nvim/CopilotChat.nvim",
     branch = "canary",
     dependencies = {
       { "zbirenbaum/copilot.lua" }, -- or github/copilot.vim
       { "nvim-lua/plenary.nvim" },  -- for curl, log wrapper
     },
+    build = "make tiktoken",        -- Only on MacOS or Linux
     opts = {
-      debug = true, -- Enable debugging
+      debug = true,                 -- Enable debugging
       -- See Configuration section for rest
     },
     -- See Commands section for default commands if you want to lazy load on them

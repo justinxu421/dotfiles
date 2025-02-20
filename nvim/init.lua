@@ -75,18 +75,11 @@ require('lazy').setup({
     'augmentcode/augment.vim',
   },
   {
-    "CopilotC-Nvim/CopilotChat.nvim",
-    branch = "canary",
+    "olimorris/codecompanion.nvim",
     dependencies = {
-      { "zbirenbaum/copilot.lua" }, -- or github/copilot.vim
-      { "nvim-lua/plenary.nvim" },  -- for curl, log wrapper
+      "nvim-lua/plenary.nvim",
+      "nvim-treesitter/nvim-treesitter",
     },
-    build = "make tiktoken",        -- Only on MacOS or Linux
-    opts = {
-      debug = true,                 -- Enable debugging
-      -- See Configuration section for rest
-    },
-    -- See Commands section for default commands if you want to lazy load on them
   },
   -- nvim v0.8.0
   {
@@ -141,6 +134,20 @@ require('lazy').setup({
       },
     },
   },
+  -- {
+  --   "CopilotC-Nvim/CopilotChat.nvim",
+  --   branch = "canary",
+  --   dependencies = {
+  --     { "zbirenbaum/copilot.lua" }, -- or github/copilot.vim
+  --     { "nvim-lua/plenary.nvim" },  -- for curl, log wrapper
+  --   },
+  --   build = "make tiktoken",        -- Only on MacOS or Linux
+  --   opts = {
+  --     debug = true,                 -- Enable debugging
+  --     -- See Configuration section for rest
+  --   },
+  --   -- See Commands section for default commands if you want to lazy load on them
+  -- },
   -- Git related plugins
   'tpope/vim-fugitive',
   'tpope/vim-rhubarb',
@@ -150,6 +157,7 @@ require('lazy').setup({
   'christoomey/vim-tmux-navigator',
   'rmagatti/auto-session',
   -- 'Exafunction/codeium.vim',
+  'Exafunction/codeium.vim',
   -- {
   --   "yetone/avante.nvim",
   --   event = "VeryLazy",
@@ -351,6 +359,16 @@ require("auto-session").setup {
     end,
   },
 }
+-- require("codecompanion").setup({
+--   strategies = {
+--     chat = {
+--       adapter = "anthropic",
+--     },
+--     inline = {
+--       adapter = "anthropic",
+--     },
+--   },
+-- })
 
 vim.o.hlsearch = true
 -- Make line numbers default
